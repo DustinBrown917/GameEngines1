@@ -10,8 +10,9 @@ namespace MEGA
         public static PlayerController Instance { get { return instance_; } }
 
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Transform groundCheckTransform;
+        [SerializeField] private Collider2D groundCheckCollider;
         [SerializeField] private LayerMask whatIsGround;
+        [SerializeField] private Vector2 groundCheckDimensions;
         [SerializeField] private float movementSpeed;
         [SerializeField] private float jumpSpeed;
 
@@ -45,21 +46,26 @@ namespace MEGA
         // Update is called once per frame
         void Update()
         {
-
-        }
-
-        private void FixedUpdate()
-        {
             cachedVelocity.y = rb2d.velocity.y;
             if (canRecieveInput_)
             {
                 cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
+
+                if (Mathf.Abs(cachedVelocity.x) > 3.0f && IsGrounded()) { animator.SetBool("isRunning", true); }
+                else { animator.SetBool("isRunning", false); }
+
                 if (Input.GetButtonDown("Jump")) { Jump(); }
             }
-            
-            
+        }
+
+        private void FixedUpdate()
+        { 
             rb2d.velocity = cachedVelocity;
             SetFacing();
+        }
+
+        private void OnDrawGizmos()
+        {
         }
 
         private void OnDestroy()
@@ -76,7 +82,7 @@ namespace MEGA
         /// <returns>True if the player is grounded.</returns>
         public bool IsGrounded()
         {
-            return (Physics2D.OverlapCircle(groundCheckTransform.position, 0.2f, whatIsGround) != null);
+            return groundCheckCollider.IsTouchingLayers(whatIsGround);           
         }
 
         /// <summary>
