@@ -12,7 +12,7 @@ namespace MEGA
             IHealthyObject ho = collision.GetComponent<IHealthyObject>();
             if(ho != null)
             {
-                ho.Damage(0.0f);
+                ho.Kill();
             }
         }
     }

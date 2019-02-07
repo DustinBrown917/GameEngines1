@@ -1,18 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace MEGA
 {
-    public class PlayerController : MonoBehaviour, IHealthyObject
+    public class PlayerController : MonoBehaviour, IHealthyObject, IResettable
     {
         private static PlayerController instance_ = null;
         public static PlayerController Instance { get { return instance_; } }
 
         [SerializeField] private SpriteRenderer spriteRenderer;
+        private Vector3 startPosition;
         [SerializeField] private Collider2D groundCheckCollider;
         [SerializeField] private LayerMask whatIsGround;
-        [SerializeField] private Vector2 groundCheckDimensions;
         [SerializeField] private float movementSpeed;
         [SerializeField] private float jumpSpeed;
         [SerializeField] private Projectile projectilePrefab;
@@ -50,9 +51,13 @@ namespace MEGA
             if(instance_ == null) {
                 instance_ = this;
 
+                startPosition = transform.position;
+
                 animator = GetComponent<Animator>();
                 rb2d = GetComponent<Rigidbody2D>();
                 wfs_FireCooldown = new WaitForSeconds(fireCoolDownTime);
+
+                Register();
 
             } else {
                 Destroy(gameObject);
@@ -70,17 +75,23 @@ namespace MEGA
             
             if (canRecieveInput_)
             {
+                if (Input.GetButtonDown("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
+                if (Input.GetButtonUp("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
                 if (Input.GetButtonDown("Jump") && isGrounded) { shouldJump = true; }
                 cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
 
                 if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
                 else { animator.SetBool("isRunning", false); }
 
-                if (Input.GetButtonDown("Fire1")) {
+                if (Input.GetButtonDown("Fire1"))
+                {
                     animator.SetBool("isShooting", true);
                     Shoot();
                 }
                 if (Input.GetButtonUp("Fire1")) { animator.SetBool("isShooting", false); }
+
+
+
             }
             
         }
@@ -111,6 +122,7 @@ namespace MEGA
         {
             //Close singleton pattern.
             if(instance_ == this) {
+                ResetManager.RemoveResettable(this);
                 instance_ = null; 
             }
         }
@@ -268,10 +280,55 @@ namespace MEGA
             canRecieveInput_ = false;
             canReceiveDamage_ = false;
 
-            rb2d.velocity = new Vector2();
+            rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y);
 
-            animator.SetTrigger("death");
+            OnDeath();
+            if (withAnim) {
+                animator.SetTrigger("death");
+            }
+            
         }
+
+        /// <summary>
+        /// To interface with the Animator for animation events. Why cant we pass bools!? Come on, Unity!
+        /// </summary>
+        public void KillWrapper()
+        {
+            Kill();
+        }
+
+        public void Register()
+        {
+            ResetManager.AddResettable(this);
+        }
+
+        public void IReset()
+        {
+            RestoreToMaxHP();
+            transform.position = startPosition;
+            rb2d.velocity = new Vector2();
+            canRecieveInput_ = true;
+            canReceiveDamage_ = true;
+            animator.Play("Player_Idle", -1);
+        }
+
+
+        /******************************************************************************/
+        /*********************************** EVENTS ***********************************/
+        /******************************************************************************/
+
+        public event EventHandler Death;
+
+        public void OnDeath()
+        {
+            EventHandler handler = Death;
+
+            if(handler != null) { handler(this, EventArgs.Empty); }
+        }
+
+        /******************************************************************************/
+        /************************************ ENUMS ***********************************/
+        /******************************************************************************/
 
         public enum CharacterStates
         {
