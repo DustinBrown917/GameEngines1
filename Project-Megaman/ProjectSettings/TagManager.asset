@@ -21,8 +21,8 @@ TagManager:
   - TransitionTrigger
   - PlayerProjectile
   - Enemy
-  - 
-  - 
+  - Pickups
+  - EnemyProjectile
   - 
   - 
   - 

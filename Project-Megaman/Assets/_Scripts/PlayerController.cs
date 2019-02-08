@@ -44,6 +44,10 @@ namespace MEGA
         private Coroutine cr_FireCooldown;
         private WaitForSeconds wfs_FireCooldown;
         private Coroutine cr_DamageReceivedSequence;
+        private Coroutine cr_PickupFlash;
+        [SerializeField] private float pickupFlashTime = 1.0f;
+        [SerializeField] private float pickupFlahRate = 1.0f;
+        [SerializeField] private Color pickupFlashColor = Color.green;
 
         private void Awake()
         {
@@ -71,27 +75,21 @@ namespace MEGA
         }
 
         void Update()
-        {
-            
+        {           
             if (canRecieveInput_)
             {
                 if (Input.GetButtonDown("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
-                if (Input.GetButtonUp("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
                 if (Input.GetButtonDown("Jump") && isGrounded) { shouldJump = true; }
                 cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
 
                 if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
                 else { animator.SetBool("isRunning", false); }
 
-                if (Input.GetButtonDown("Fire1"))
-                {
+                if (Input.GetButtonDown("Fire1")) {
                     animator.SetBool("isShooting", true);
                     Shoot();
                 }
                 if (Input.GetButtonUp("Fire1")) { animator.SetBool("isShooting", false); }
-
-
-
             }
             
         }
@@ -111,6 +109,12 @@ namespace MEGA
         private void OnTriggerEnter2D(Collider2D collision)
         {
             GetIsGrounded();
+
+            Pickup pu = collision.gameObject.GetComponent<Pickup>();
+
+            if(pu != null) {
+                CoroutineManager.BeginCoroutine(PickupFlash(), ref cr_PickupFlash, this);
+            }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
@@ -242,6 +246,28 @@ namespace MEGA
 
             spriteRenderer.color = c1;
             canReceiveDamage_ = true;
+        }
+
+        private IEnumerator PickupFlash()
+        {
+            bool colorFlipFlop = true;
+
+            float flipRateTimer = 0;
+            float t = 0;
+            while(t < pickupFlashTime)
+            {
+                if(flipRateTimer >= pickupFlahRate) {
+                    spriteRenderer.color = (colorFlipFlop) ? Color.white : pickupFlashColor;
+                    colorFlipFlop = !colorFlipFlop;
+                    flipRateTimer = 0;
+                }
+
+                flipRateTimer += Time.deltaTime;
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            spriteRenderer.color = Color.white;
         }
 
         public void RestoreToMaxHP()
