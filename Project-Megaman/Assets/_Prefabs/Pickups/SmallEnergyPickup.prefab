@@ -48,6 +48,7 @@ MonoBehaviour:
   graphic: {fileID: 21300002, guid: 9ad1bb0d65da87542993f4eea17f5675, type: 3}
   behavioursToDisable:
   - {fileID: 3708841144101784233}
+  effectColour_: {r: 0.5424528, g: 0.5424528, b: 1, a: 1}
   energyRestored: 10
 --- !u!212 &78981562874020974
 SpriteRenderer:

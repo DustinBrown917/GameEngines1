@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MEGA
 {
-    public class PlayerController : MonoBehaviour, IHealthyObject, IResettable
+    public class PlayerController : MonoBehaviour, IHealthyObject, IResettable, IEnergyObject
     {
         private static PlayerController instance_ = null;
         public static PlayerController Instance { get { return instance_; } }
@@ -27,8 +27,10 @@ namespace MEGA
         private bool canFire = true;
 
         [SerializeField] private float maxHP = 100.0f;
+        [SerializeField] private float maxEnergy = 100.0f;
         [SerializeField] private Vector2 damageVelocity;
         private float currentHP;
+        private float currentEnergy;
 
         private Vector3 currentFirePosition;
 
@@ -47,7 +49,6 @@ namespace MEGA
         private Coroutine cr_PickupFlash;
         [SerializeField] private float pickupFlashTime = 1.0f;
         [SerializeField] private float pickupFlahRate = 1.0f;
-        [SerializeField] private Color pickupFlashColor = Color.green;
 
         private void Awake()
         {
@@ -113,7 +114,7 @@ namespace MEGA
             Pickup pu = collision.gameObject.GetComponent<Pickup>();
 
             if(pu != null) {
-                CoroutineManager.BeginCoroutine(PickupFlash(), ref cr_PickupFlash, this);
+                CoroutineManager.BeginCoroutine(PickupFlash(pu.EffectColor), ref cr_PickupFlash, this);
             }
         }
 
@@ -248,7 +249,7 @@ namespace MEGA
             canReceiveDamage_ = true;
         }
 
-        private IEnumerator PickupFlash()
+        private IEnumerator PickupFlash(Color effectColour)
         {
             bool colorFlipFlop = true;
 
@@ -257,7 +258,7 @@ namespace MEGA
             while(t < pickupFlashTime)
             {
                 if(flipRateTimer >= pickupFlahRate) {
-                    spriteRenderer.color = (colorFlipFlop) ? Color.white : pickupFlashColor;
+                    spriteRenderer.color = (colorFlipFlop) ? Color.white : effectColour;
                     colorFlipFlop = !colorFlipFlop;
                     flipRateTimer = 0;
                 }
@@ -336,6 +337,21 @@ namespace MEGA
             canRecieveInput_ = true;
             canReceiveDamage_ = true;
             animator.Play("Player_Idle", -1);
+        }
+
+        public void RestoreToMaxEnergy()
+        {
+            currentEnergy = maxEnergy;
+        }
+
+        public void GainEnergy(float amount)
+        {
+            currentEnergy += amount;
+        }
+
+        public void LoseEnergy(float amount)
+        {
+            GainEnergy(-amount);
         }
 
 

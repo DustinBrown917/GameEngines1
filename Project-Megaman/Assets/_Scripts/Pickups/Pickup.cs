@@ -9,7 +9,11 @@ namespace MEGA
         private SpriteRenderer spriteRenderer;
         [SerializeField] private Sprite graphic;
         [SerializeField] private Behaviour[] behavioursToDisable;
+
         private bool canBePickedUp = true;
+
+        [SerializeField] private Color effectColour_;
+        public Color EffectColor { get { return effectColour_; } }
 
         private void Awake()
         {

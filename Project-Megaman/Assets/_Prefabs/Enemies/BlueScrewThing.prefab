@@ -140,5 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 2
+  respawns: 1
   meleeDamage: 2
   projectile: {fileID: 0}
+  spriteRenderer: {fileID: 4657113849865361910}

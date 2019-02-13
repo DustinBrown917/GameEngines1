@@ -50,6 +50,7 @@ MonoBehaviour:
   behavioursToDisable:
   - {fileID: 1851034681316062614}
   - {fileID: 1851034681316062615}
+  effectColour_: {r: 0.5424528, g: 0.5424528, b: 1, a: 1}
   energyRestored: 0
 --- !u!212 &1851034681316062609
 SpriteRenderer:
