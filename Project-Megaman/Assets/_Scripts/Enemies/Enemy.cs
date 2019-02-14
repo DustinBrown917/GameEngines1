@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace MEGA
 {
+    [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
     public class Enemy : MonoBehaviour, IHealthyObject, IResettable
     {
 
+        protected Rigidbody2D rb2d;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected bool respawns;
         protected float currentHealth;
@@ -23,6 +25,7 @@ namespace MEGA
         protected virtual void Awake()
         {
             animator = GetComponent<Animator>();
+            rb2d = GetComponent<Rigidbody2D>();
         }
 
         protected virtual void Start()
@@ -41,9 +44,19 @@ namespace MEGA
             }
         }
 
+        protected virtual void OnCollisionEnter2D(Collision2D collision)
+        {
+            
+            PlayerController p = collision.collider.GetComponent<PlayerController>();
+
+            if (p != null) {
+                p.Damage(meleeDamage);
+            }
+        }
+
         protected virtual void OnBecameVisible()
         {
-            if(cr_enemyBehaviour != null){
+            if(cr_enemyBehaviour == null){
                 CoroutineManager.BeginCoroutine(EnemyBehaviour(), ref cr_enemyBehaviour, this);
             }
             
@@ -51,13 +64,12 @@ namespace MEGA
 
         protected virtual void OnBecameInvisible()
         {
-            if(currentHealth <= 0) { return; }
+            if(currentHealth <= 0) { return; } //If they have already been killed, they will not need to handle offscreen.
             HandleOffscreen();
         }
 
         public virtual void Damage(float amount)
         {
-            Debug.Log(amount);
             currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
 
             if (currentHealth == 0) { Kill(false); }

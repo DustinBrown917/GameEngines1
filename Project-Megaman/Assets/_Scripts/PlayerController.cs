@@ -40,6 +40,7 @@ namespace MEGA
         private Animator animator;
         private Rigidbody2D rb2d;
         private bool canReceiveDamage_ = true;
+        public bool CanReceiveDamage { get { return canReceiveDamage_; } }
         private bool canRecieveInput_ = true;
         private Vector2 cachedVelocity;
 
@@ -221,6 +222,7 @@ namespace MEGA
 
         private IEnumerator DamageReceivedSequence()
         {
+            gameObject.layer = LayerMask.NameToLayer("PlayerInjured");
             Color c1 = Color.white;
             Color c2 = new Color(1.0f, 1.0f, 1.0f, 0.25f);
 
@@ -246,7 +248,12 @@ namespace MEGA
             }
 
             spriteRenderer.color = c1;
-            canReceiveDamage_ = true;
+            if(currentHP > 0)
+            {
+                canReceiveDamage_ = true;
+                gameObject.layer = LayerMask.NameToLayer("Player");
+            }
+            
         }
 
         private IEnumerator PickupFlash(Color effectColour)
@@ -319,13 +326,11 @@ namespace MEGA
         /// <summary>
         /// To interface with the Animator for animation events. Why cant we pass bools!? Come on, Unity!
         /// </summary>
-        public void KillWrapper()
-        {
+        public void KillWrapper() {
             Kill();
         }
 
-        public void Register()
-        {
+        public void Register() {
             ResetManager.AddResettable(this);
         }
 
@@ -337,6 +342,7 @@ namespace MEGA
             canRecieveInput_ = true;
             canReceiveDamage_ = true;
             animator.Play("Player_Idle", -1);
+            gameObject.layer = LayerMask.NameToLayer("Player");
         }
 
         public void RestoreToMaxEnergy()
@@ -347,10 +353,10 @@ namespace MEGA
         public void GainEnergy(float amount)
         {
             currentEnergy += amount;
+            Debug.Log(currentEnergy.ToString() + " Energy Left.");
         }
 
-        public void LoseEnergy(float amount)
-        {
+        public void LoseEnergy(float amount) {
             GainEnergy(-amount);
         }
 
