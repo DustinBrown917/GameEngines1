@@ -59,7 +59,8 @@ namespace MEGA
             if(cr_enemyBehaviour == null){
                 CoroutineManager.BeginCoroutine(EnemyBehaviour(), ref cr_enemyBehaviour, this);
             }
-            
+            rb2d.simulated = true;
+
         }
 
         protected virtual void OnBecameInvisible()
@@ -72,7 +73,7 @@ namespace MEGA
         {
             currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
 
-            if (currentHealth == 0) { Kill(false); }
+            if (currentHealth == 0) { Kill(true); }
         }
 
         public virtual void Heal(float amount)
@@ -84,6 +85,8 @@ namespace MEGA
         {
             if (withAnim) {
                 animator.SetTrigger("death");
+                rb2d.simulated = false;
+                CoroutineManager.HaltCoroutine(ref cr_enemyBehaviour, this);
             }
             else {
                 HandleDeath();
