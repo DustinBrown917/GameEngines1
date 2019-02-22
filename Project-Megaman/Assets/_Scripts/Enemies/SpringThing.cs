@@ -80,7 +80,6 @@ namespace MEGA
 
 
             if(PlayerController.Instance.transform.position.x > transform.position.x) { angle *= -1; }
-            Debug.Log(angle);
             return angle;
         }
     }

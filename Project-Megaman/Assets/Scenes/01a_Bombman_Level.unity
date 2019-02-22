@@ -492,6 +492,7 @@ Transform:
   - {fileID: 377920806}
   - {fileID: 1958014687}
   - {fileID: 1095620793}
+  - {fileID: 1620826121}
   m_Father: {fileID: 327294276}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7110,6 +7111,55 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1374402643}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1620826120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1620826121}
+  - component: {fileID: 1620826122}
+  m_Layer: 0
+  m_Name: BouncingBettySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1620826121
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1620826120}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3, y: -8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 62927307}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1620826122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1620826120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a0ee79f272abc54484158557d4a15ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkIfOnscreenPoint: {x: 0, y: 2, z: 0}
+  deploymentOffset: {x: 0, y: 1.1, z: 0}
+  bouncingBettyPrefab: {fileID: 4657113849865361898, guid: 4121aadf5f5cb89438f9c7ff1e889a6b,
+    type: 3}
+  spawnCheckWaitSeconds: 0.5
+  spawnInterval: 3
 --- !u!1001 &1625383634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7640,6 +7690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40b96c4a68076f40a66330e8df43f38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetMainCamera: {fileID: 1542285714}
   delayAfterDeath: 3
 --- !u!4 &1687493314
 Transform:

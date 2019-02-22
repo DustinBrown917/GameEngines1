@@ -9,6 +9,10 @@ namespace MEGA
         private static GameManager instance_ = null;
         public static GameManager Instance;
 
+        private static Camera mainCamera_ = null;
+        public static Camera MainCamera { get { return mainCamera_; } }
+
+        [SerializeField] private Camera targetMainCamera;
         [SerializeField] private float delayAfterDeath = 4.0f;
         private Coroutine cr_delayAfterDeathTimer;
 
@@ -16,6 +20,7 @@ namespace MEGA
         {
             if(instance_ == null) {
                 instance_ = this;
+                mainCamera_ = targetMainCamera;
             } else {
                 Destroy(gameObject);
             }
@@ -32,6 +37,7 @@ namespace MEGA
             if (instance_ == this)
             {
                 ResetManager.Reinitialize();
+                mainCamera_ = null;
                 instance_ = null;
             }
         }
