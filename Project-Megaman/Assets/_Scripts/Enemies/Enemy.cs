@@ -6,19 +6,18 @@ using UnityEngine;
 namespace MEGA
 {
     [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
-    public class Enemy : MonoBehaviour, IHealthyObject, IResettable
+    public abstract class Enemy : MonoBehaviour, IHealthyObject, IResettable
     {
         
 
         protected Rigidbody2D rb2d;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected bool respawns;
-        [SerializeField] protected bool startsAsleep;
         protected float currentHealth;
         [SerializeField] protected float meleeDamage;
         [SerializeField] protected GameObject projectile;
 
-        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] protected SpriteRenderer spriteRenderer;
         protected Animator animator;
         protected Vector3 spawnPosition; //if no spawn parent exists when trying to respawn, will default to spawning at this location.
         [SerializeField] protected Transform spawnParent;
@@ -38,26 +37,10 @@ namespace MEGA
             Register();
             currentHealth = maxHealth;
             spawnPosition = transform.position;
-
-            if (startsAsleep)
-            {
-                rb2d.simulated = false;
-                CoroutineManager.HaltCoroutine(ref cr_enemyBehaviour, this);
-            }
-        }
-
-        protected virtual void OnTriggerEnter2D(Collider2D collision)
-        {
-            PlayerController p = collision.GetComponent<PlayerController>();
-
-            if (p != null) {
-                p.Damage(meleeDamage);
-            }
         }
 
         protected virtual void OnCollisionEnter2D(Collision2D collision)
         {
-            
             PlayerController p = collision.collider.GetComponent<PlayerController>();
 
             if (p != null) {
@@ -67,10 +50,11 @@ namespace MEGA
 
         protected virtual void OnBecameVisible()
         {
-            if(cr_enemyBehaviour == null){
+            animator.enabled = true;
+            rb2d.simulated = true;
+            if (cr_enemyBehaviour == null){
                 CoroutineManager.BeginCoroutine(EnemyBehaviour(), ref cr_enemyBehaviour, this);
             }
-            rb2d.simulated = true;
 
         }
 
@@ -116,6 +100,8 @@ namespace MEGA
 
         public virtual void HandleOffscreen()
         {
+            animator.enabled = false;
+            rb2d.simulated = false;
             CoroutineManager.HaltCoroutine(ref cr_enemyBehaviour, this);
 
             if (!respawns) {
@@ -141,10 +127,9 @@ namespace MEGA
             RestoreToMaxHP();
             if(spawnParent != null) { transform.position = spawnParent.position; }
             else { transform.position = spawnPosition; }
-            OnSpawnedIn();
         }
 
-        private IEnumerator SafeToSpawnChecker()
+        protected virtual IEnumerator SafeToSpawnChecker()
         {
             transform.position = offScreenHoldingPosition;
 
@@ -158,32 +143,8 @@ namespace MEGA
             IReset();
         }
 
-        protected virtual IEnumerator EnemyBehaviour()
-        {
-            while (true) {   
-                //enemy behaviour goes here.
-                yield return null;
-            }           
-        }
-
-
-
-
-
-        /******************************************************************************/
-        /*********************************** EVENTS ***********************************/
-        /******************************************************************************/
-
-        public event EventHandler SpawnedIn;
-
-        protected void OnSpawnedIn()
-        {
-            EventHandler handler = SpawnedIn;
-
-            if (handler != null) {
-                handler(this, EventArgs.Empty);
-            }
-        }
+        protected virtual void FireProjectile() { /*Stub*/ } //Data contract since all enemies COULD have a projectile.
+        protected abstract IEnumerator EnemyBehaviour();
     }
 }
 

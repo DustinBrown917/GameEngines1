@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 4586069872955807534}
   - component: {fileID: 4793649695211090781}
   - component: {fileID: 7240033883000696947}
-  - component: {fileID: 3279779956707387578}
-  m_Layer: 14
+  - component: {fileID: 1909301210100805977}
+  - component: {fileID: 1621354762454645042}
+  m_Layer: 19
   m_Name: BlueBouncingBetty_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +93,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -113,13 +114,13 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_GravityScale: 2
+  m_Material: {fileID: 6200000, guid: a2a546ab11f9fa54092d96d2f5488aa8, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3279779956707387578
+--- !u!114 &1909301210100805977
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -128,8 +129,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 1317979078784710469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19e0fb6e80c335847b51dd2d09b6380b, type: 3}
+  m_Script: {fileID: 11500000, guid: faa8da27caa7e474da44f4d8f6c9383d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impactAnim: 1
   damage: 1
-  launchVelocity: {x: -12, y: 0}
+  launchVelocity_: {x: 0, y: 0}
+  duration: 2
+--- !u!95 &1621354762454645042
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317979078784710469}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6fc3baba846f22140af6463719795a44, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

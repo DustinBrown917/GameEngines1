@@ -180,7 +180,7 @@ namespace MEGA
 
             if (p != null && spriteRenderer.flipX)
             {
-                p.launchVelocity.x *= -1;
+                p.SetLaunchVelocity(new Vector2(p.LaunchVelocity.x * -1, p.LaunchVelocity.y));
             }
 
             canFire = false;

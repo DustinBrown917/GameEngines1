@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4657113849865361909}
   - component: {fileID: 4657113849865361910}
   - component: {fileID: 4657113849865361911}
-  - component: {fileID: 4657113849865361896}
+  - component: {fileID: 220179126351511494}
+  - component: {fileID: 4206117758140998815}
   m_Layer: 15
   m_Name: BlueScrewThing
   m_TagString: Untagged
@@ -44,7 +45,7 @@ Animator:
   m_GameObject: {fileID: 4657113849865361898}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6eb8f18f0bac2184c8670b4f8e2b952c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -90,7 +91,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300006, guid: 326ce0438a1d78044bd7216141d04651, type: 3}
+  m_Sprite: {fileID: 21300004, guid: 326ce0438a1d78044bd7216141d04651, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,7 +119,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1, y: 0.5}
     newSize: {x: 1, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -127,7 +128,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &4657113849865361896
+--- !u!114 &220179126351511494
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -136,11 +137,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 4657113849865361898}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f8b3071b881b9a4d8419611dede557e, type: 3}
+  m_Script: {fileID: 11500000, guid: 9df833033250ce945a123868b9d4f6e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 2
-  respawns: 1
-  meleeDamage: 2
-  projectile: {fileID: 0}
+  maxHealth: 0
+  respawns: 0
+  meleeDamage: 0
+  projectile: {fileID: 1317979078784710469, guid: 5da8ec7f2c5023041a84b8b8b5d1b3d2,
+    type: 3}
   spriteRenderer: {fileID: 4657113849865361910}
+  spawnParent: {fileID: 0}
+  projectileSpeed: 10
+  projectileOffset: {x: 0, y: 0.8, z: 0}
+  targetingDistance: 6.5
+  checkForPlayerInterval: 0.5
+--- !u!50 &4206117758140998815
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657113849865361898}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

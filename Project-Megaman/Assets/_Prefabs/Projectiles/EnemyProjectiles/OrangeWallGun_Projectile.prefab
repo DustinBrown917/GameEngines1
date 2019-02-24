@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 4793649695211090781}
   - component: {fileID: 7240033883000696947}
   - component: {fileID: 3279779956707387578}
-  m_Layer: 14
+  - component: {fileID: 6108967483836562585}
+  m_Layer: 17
   m_Name: OrangeWallGun_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,5 +132,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19e0fb6e80c335847b51dd2d09b6380b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impactAnim: 0
   damage: 1
-  launchVelocity: {x: -12, y: 0}
+  launchVelocity_: {x: 0, y: 0}
+--- !u!95 &6108967483836562585
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317979078784710469}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6fc3baba846f22140af6463719795a44, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

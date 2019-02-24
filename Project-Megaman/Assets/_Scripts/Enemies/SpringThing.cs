@@ -51,9 +51,8 @@ namespace MEGA
             return v;
         }
 
-        protected override void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            base.OnTriggerEnter2D(collision);
             GetIsGrounded();
             if (isGrounded) { rb2d.velocity = new Vector2(0, rb2d.velocity.y); }
         }
