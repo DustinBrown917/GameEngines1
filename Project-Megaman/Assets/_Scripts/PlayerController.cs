@@ -14,6 +14,10 @@ namespace MEGA
         private Vector3 startPosition;
         [SerializeField] private Collider2D groundCheckCollider;
         [SerializeField] private LayerMask whatIsGround;
+        [SerializeField] private Collider2D highLadderCollider;
+        [SerializeField] private Collider2D lowLadderCollider;
+        [SerializeField] private LayerMask whatIsLadder;
+        [SerializeField] private ContactFilter2D filter;
         [SerializeField] private float movementSpeed;
         [SerializeField] private float jumpSpeed;
         [SerializeField] private Projectile projectilePrefab;
@@ -25,6 +29,7 @@ namespace MEGA
         [SerializeField] private float damageInvulnerabilityTime = 2.0f;
         [SerializeField] private float damageFlashRate = 1;
         private bool canFire = true;
+        private bool isClimbing = false;
 
         [SerializeField] private float maxHP = 100.0f;
         [SerializeField] private float maxEnergy = 100.0f;
@@ -82,7 +87,30 @@ namespace MEGA
             {
                 if (Input.GetButtonDown("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
                 if (Input.GetButtonDown("Jump") && isGrounded) { shouldJump = true; }
-                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
+
+                if (Input.GetButtonDown("Vertical") && GetClimbOverlapState() != ClimbCheckOverlapState.NONE)
+                {
+                    float v = Input.GetAxis("Vertical");
+                    switch (GetClimbOverlapState())
+                    {
+                        case ClimbCheckOverlapState.TOP:
+                            if (v > 0.0f) { StartClimbing(); }
+                            break;
+                        case ClimbCheckOverlapState.BOTTOM:
+                            if (v < 0.0f && !GetIsGrounded()) { StartClimbing(); }
+                            else { StopClimbing(); }
+                            break;
+                        case ClimbCheckOverlapState.BOTH:
+                            if (v < 0.0f && GetIsGrounded()) { StopClimbing(); }
+                            else { StartClimbing(); }
+                            break;
+                        case ClimbCheckOverlapState.NONE: //Never happens
+                        default:
+                            break;
+                    }
+                }
+
+                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime * ((!isClimbing) ? 1 : 0);
 
                 if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
                 else { animator.SetBool("isRunning", false); }
@@ -142,6 +170,50 @@ namespace MEGA
             isGrounded = groundCheckCollider.IsTouchingLayers(whatIsGround);
             animator.SetBool("isGrounded", isGrounded);
             return isGrounded;      
+        }
+
+        public ClimbCheckOverlapState GetClimbOverlapState()
+        {
+            if (highLadderCollider.IsTouchingLayers(whatIsLadder) && lowLadderCollider.IsTouchingLayers(whatIsLadder)) {
+                return ClimbCheckOverlapState.BOTH;
+            } else if (highLadderCollider.IsTouchingLayers(whatIsLadder)) {
+                return ClimbCheckOverlapState.TOP;
+            } else if (lowLadderCollider.IsTouchingLayers(whatIsLadder)) {
+                return ClimbCheckOverlapState.BOTTOM;
+            } else {
+                return ClimbCheckOverlapState.NONE;
+            }
+
+        }
+
+        private void StartClimbing() //Would make this a method that takes a bool, but the animator doesn't like that.
+        {
+            Collider2D[] results = new Collider2D[1];
+
+            highLadderCollider.OverlapCollider(filter, results);
+            
+            if(results[0] == null)
+            {
+                lowLadderCollider.OverlapCollider(filter, results);
+            }
+
+            if(results[0] != null)
+            {
+                Vector3 newPos = transform.position;
+                newPos.x = results[0].transform.position.x + results[0].offset.x;
+
+                transform.position = newPos;
+                Debug.Log("Found ladder");
+                isClimbing = true;
+                animator.SetBool("isClimbing", isClimbing);
+            }
+            
+        }
+
+        private void StopClimbing()
+        {
+            isClimbing = false;
+            animator.SetBool("isClimbing", isClimbing);
         }
 
         /// <summary>
@@ -341,6 +413,7 @@ namespace MEGA
             rb2d.velocity = new Vector2();
             canRecieveInput_ = true;
             canReceiveDamage_ = true;
+            StopClimbing();
             animator.Play("Player_Idle", -1);
             gameObject.layer = LayerMask.NameToLayer("Player");
         }
@@ -384,6 +457,14 @@ namespace MEGA
             RUNNING,
             JUMPING,
             CLIMBING
+        }
+
+        public enum ClimbCheckOverlapState
+        {
+            NONE,
+            TOP,
+            BOTTOM,
+            BOTH
         }
     }
 }
