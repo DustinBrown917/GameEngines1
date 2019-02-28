@@ -12,13 +12,14 @@ namespace MEGA
 
         [SerializeField] private SpriteRenderer spriteRenderer;
         private Vector3 startPosition;
+        private float startGravity;
         [SerializeField] private Collider2D groundCheckCollider;
         [SerializeField] private LayerMask whatIsGround;
         [SerializeField] private Collider2D highLadderCollider;
         [SerializeField] private Collider2D lowLadderCollider;
-        [SerializeField] private LayerMask whatIsLadder;
         [SerializeField] private ContactFilter2D filter;
         [SerializeField] private float movementSpeed;
+        [SerializeField] private float climbSpeed;
         [SerializeField] private float jumpSpeed;
         [SerializeField] private Projectile projectilePrefab;
         [SerializeField] private Vector3 idleFireOffset;
@@ -64,10 +65,12 @@ namespace MEGA
 
                 startPosition = transform.position;
 
+
                 animator = GetComponent<Animator>();
                 rb2d = GetComponent<Rigidbody2D>();
                 wfs_FireCooldown = new WaitForSeconds(fireCoolDownTime);
 
+                startGravity = rb2d.gravityScale;
                 Register();
 
             } else {
@@ -86,7 +89,10 @@ namespace MEGA
             if (canRecieveInput_)
             {
                 if (Input.GetButtonDown("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
-                if (Input.GetButtonDown("Jump") && isGrounded) { shouldJump = true; }
+                if (Input.GetButtonDown("Jump")) {
+                    if (isClimbing) { StopClimbing(); }
+                    if (isGrounded) { shouldJump = true; }                   
+                }
 
                 if (Input.GetButtonDown("Vertical") && GetClimbOverlapState() != ClimbCheckOverlapState.NONE)
                 {
@@ -110,7 +116,8 @@ namespace MEGA
                     }
                 }
 
-                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime * ((!isClimbing) ? 1 : 0);
+                //cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime * ((!isClimbing) ? 1 : 0);
+                //cachedVelocity.y += Input.GetAxis("Vertical") * climbSpeed * Time.fixedDeltaTime * ((isClimbing) ? 1 : 0);
 
                 if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
                 else { animator.SetBool("isRunning", false); }
@@ -128,7 +135,13 @@ namespace MEGA
         {
             if (canRecieveInput_)
             {
-                cachedVelocity.y = rb2d.velocity.y;
+                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime * ((!isClimbing) ? 1 : 0);
+                if (isClimbing) {
+                    cachedVelocity.y = Input.GetAxis("Vertical") * climbSpeed * Time.fixedDeltaTime;
+                } else {
+                    cachedVelocity.y = rb2d.velocity.y;
+                }
+                
 
                 if (shouldJump) { Jump(); }
                 rb2d.velocity = cachedVelocity;
@@ -174,11 +187,11 @@ namespace MEGA
 
         public ClimbCheckOverlapState GetClimbOverlapState()
         {
-            if (highLadderCollider.IsTouchingLayers(whatIsLadder) && lowLadderCollider.IsTouchingLayers(whatIsLadder)) {
+            if (highLadderCollider.IsTouchingLayers(filter.layerMask) && lowLadderCollider.IsTouchingLayers(filter.layerMask)) {
                 return ClimbCheckOverlapState.BOTH;
-            } else if (highLadderCollider.IsTouchingLayers(whatIsLadder)) {
+            } else if (highLadderCollider.IsTouchingLayers(filter.layerMask)) {
                 return ClimbCheckOverlapState.TOP;
-            } else if (lowLadderCollider.IsTouchingLayers(whatIsLadder)) {
+            } else if (lowLadderCollider.IsTouchingLayers(filter.layerMask)) {
                 return ClimbCheckOverlapState.BOTTOM;
             } else {
                 return ClimbCheckOverlapState.NONE;
@@ -203,7 +216,8 @@ namespace MEGA
                 newPos.x = results[0].transform.position.x + results[0].offset.x;
 
                 transform.position = newPos;
-                Debug.Log("Found ladder");
+
+                rb2d.gravityScale = 0;
                 isClimbing = true;
                 animator.SetBool("isClimbing", isClimbing);
             }
@@ -212,6 +226,7 @@ namespace MEGA
 
         private void StopClimbing()
         {
+            rb2d.gravityScale = startGravity;
             isClimbing = false;
             animator.SetBool("isClimbing", isClimbing);
         }
