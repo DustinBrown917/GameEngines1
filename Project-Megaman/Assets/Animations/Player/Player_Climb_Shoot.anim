@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player_Jump_Shoot
+  m_Name: Player_Climb_Shoot
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,7 +20,7 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: e31d5bde2e55e9a48acfc9c976b47a5a, type: 3}
+      value: {fileID: 21300000, guid: e21dff65a8f1a894bacb04bb60309f38, type: 3}
     attribute: m_Sprite
     path: Graphic
     classID: 212
@@ -40,7 +40,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: e31d5bde2e55e9a48acfc9c976b47a5a, type: 3}
+    - {fileID: 21300000, guid: e21dff65a8f1a894bacb04bb60309f38, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -71,7 +71,7 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 2
+    intParameter: 3
     messageOptions: 0
   - time: 0
     functionName: Shoot

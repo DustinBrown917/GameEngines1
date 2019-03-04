@@ -60,7 +60,7 @@ namespace MEGA
         private void Awake()
         {
             //Open singleton pattern.
-            if(instance_ == null) {
+            if (instance_ == null) {
                 instance_ = this;
 
                 startPosition = transform.position;
@@ -85,13 +85,13 @@ namespace MEGA
         }
 
         void Update()
-        {           
+        {
             if (canRecieveInput_)
             {
                 if (Input.GetButtonDown("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
                 if (Input.GetButtonDown("Jump")) {
                     if (isClimbing) { StopClimbing(); }
-                    if (isGrounded) { shouldJump = true; }                   
+                    if (isGrounded) { shouldJump = true; }
                 }
 
                 if (Input.GetButtonDown("Vertical") && GetClimbOverlapState() != ClimbCheckOverlapState.NONE)
@@ -116,32 +116,36 @@ namespace MEGA
                     }
                 }
 
-                //cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime * ((!isClimbing) ? 1 : 0);
-                //cachedVelocity.y += Input.GetAxis("Vertical") * climbSpeed * Time.fixedDeltaTime * ((isClimbing) ? 1 : 0);
+                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
 
                 if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
                 else { animator.SetBool("isRunning", false); }
 
                 if (Input.GetButtonDown("Fire1")) {
                     animator.SetBool("isShooting", true);
-                    Shoot();
                 }
                 if (Input.GetButtonUp("Fire1")) { animator.SetBool("isShooting", false); }
             }
-            
+
         }
 
         private void FixedUpdate()
         {
             if (canRecieveInput_)
             {
-                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime * ((!isClimbing) ? 1 : 0);
+                
                 if (isClimbing) {
                     cachedVelocity.y = Input.GetAxis("Vertical") * climbSpeed * Time.fixedDeltaTime;
+                    if (Mathf.Abs(cachedVelocity.y) > 0) { animator.SetBool("isMovingWhileClimbing", true); }
+                    else { animator.SetBool("isMovingWhileClimbing", false); }
+
+                    if (cachedVelocity.x > 0) { ManualSetFacing(Directions.RIGHT); }
+                    else if(cachedVelocity.x < 0) { ManualSetFacing(Directions.LEFT); }
+                    cachedVelocity.x = 0;
                 } else {
                     cachedVelocity.y = rb2d.velocity.y;
                 }
-                
+
 
                 if (shouldJump) { Jump(); }
                 rb2d.velocity = cachedVelocity;
@@ -155,7 +159,7 @@ namespace MEGA
 
             Pickup pu = collision.gameObject.GetComponent<Pickup>();
 
-            if(pu != null) {
+            if (pu != null) {
                 CoroutineManager.BeginCoroutine(PickupFlash(pu.EffectColor), ref cr_PickupFlash, this);
             }
         }
@@ -168,9 +172,9 @@ namespace MEGA
         private void OnDestroy()
         {
             //Close singleton pattern.
-            if(instance_ == this) {
+            if (instance_ == this) {
                 ResetManager.RemoveResettable(this);
-                instance_ = null; 
+                instance_ = null;
             }
         }
 
@@ -179,10 +183,10 @@ namespace MEGA
         /// </summary>
         /// <returns>True if the player is grounded.</returns>
         public bool GetIsGrounded()
-        { 
+        {
             isGrounded = groundCheckCollider.IsTouchingLayers(whatIsGround);
             animator.SetBool("isGrounded", isGrounded);
-            return isGrounded;      
+            return isGrounded;
         }
 
         public ClimbCheckOverlapState GetClimbOverlapState()
@@ -204,13 +208,13 @@ namespace MEGA
             Collider2D[] results = new Collider2D[1];
 
             highLadderCollider.OverlapCollider(filter, results);
-            
-            if(results[0] == null)
+
+            if (results[0] == null)
             {
                 lowLadderCollider.OverlapCollider(filter, results);
             }
 
-            if(results[0] != null)
+            if (results[0] != null)
             {
                 Vector3 newPos = transform.position;
                 newPos.x = results[0].transform.position.x + results[0].offset.x;
@@ -221,7 +225,7 @@ namespace MEGA
                 isClimbing = true;
                 animator.SetBool("isClimbing", isClimbing);
             }
-            
+
         }
 
         private void StopClimbing()
@@ -245,19 +249,39 @@ namespace MEGA
         /// </summary>
         private void SetFacing()
         {
-            if(rb2d.velocity.x > 0) {
-                spriteRenderer.flipX = true;
-                if (currentFirePosition.x < 0) { currentFirePosition.x *= -1; }
+            if (rb2d.velocity.x > 0) {
+                ManualSetFacing(Directions.RIGHT);
             }
-            else if(rb2d.velocity.x < 0) {
-                spriteRenderer.flipX = false;
-                if (currentFirePosition.x > 0) { currentFirePosition.x *= -1; }
+            else if (rb2d.velocity.x < 0) {
+                ManualSetFacing(Directions.LEFT);
+            }
+        }
+
+        private void ManualSetFacing(Directions dir)
+        {
+            switch (dir)
+            {
+                case Directions.LEFT:
+                    spriteRenderer.flipX = false;
+                    if (currentFirePosition.x > 0) { currentFirePosition.x *= -1; }
+                    break;
+                case Directions.RIGHT:
+                    spriteRenderer.flipX = true;
+                    if (currentFirePosition.x < 0) { currentFirePosition.x *= -1; }
+                    break;
+                default:
+                    break;
             }
         }
 
         public void EnableInput()
         {
             canRecieveInput_ = true;
+        }
+
+        public void DisableInput()
+        {
+            canRecieveInput_ = false;
         }
 
         public void Shoot()
@@ -304,7 +328,7 @@ namespace MEGA
             yield return wfs_FireCooldown;
             canFire = true;
             cr_FireCooldown = null;
-            if (Input.GetButton("Fire1")) { Shoot(); }
+            //if (Input.GetButton("Fire1")) { Shoot(); }
         }
 
         private IEnumerator DamageReceivedSequence()
@@ -480,6 +504,12 @@ namespace MEGA
             TOP,
             BOTTOM,
             BOTH
+        }
+
+        public enum Directions
+        {
+            LEFT,
+            RIGHT
         }
     }
 }
