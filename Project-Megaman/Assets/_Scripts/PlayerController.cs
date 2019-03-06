@@ -103,8 +103,8 @@ namespace MEGA
                             if (v > 0.0f) { StartClimbing(); }
                             break;
                         case ClimbCheckOverlapState.BOTTOM:
-                            if (v < 0.0f && !GetIsGrounded()) { StartClimbing(); }
-                            else { StopClimbing(); }
+                            if (v < 0.0f) { StartClimbing(); }
+                            else if(v > 0.0f) { StopClimbing(); }
                             break;
                         case ClimbCheckOverlapState.BOTH:
                             if (v < 0.0f && GetIsGrounded()) { StopClimbing(); }
@@ -133,16 +133,42 @@ namespace MEGA
         {
             if (canRecieveInput_)
             {
-                
                 if (isClimbing) {
+                    
                     cachedVelocity.y = Input.GetAxis("Vertical") * climbSpeed * Time.fixedDeltaTime;
-                    if (Mathf.Abs(cachedVelocity.y) > 0) { animator.SetBool("isMovingWhileClimbing", true); }
+                    if (Mathf.Abs(cachedVelocity.y) > 0) {
+                        animator.SetBool("isMovingWhileClimbing", true);
+                        ClimbCheckOverlapState ccos = GetClimbOverlapState();
+                        if(cachedVelocity.y > 0) {
+                            if(ccos == ClimbCheckOverlapState.BOTTOM) {
+                                canRecieveInput_ = false;
+                                animator.Play("Player_Climb_Transition_Exit", -1);
+                            }
+                        }
+                    }
                     else { animator.SetBool("isMovingWhileClimbing", false); }
 
-                    if (cachedVelocity.x > 0) { ManualSetFacing(Directions.RIGHT); }
-                    else if(cachedVelocity.x < 0) { ManualSetFacing(Directions.LEFT); }
+                    if (cachedVelocity.x > 0) {
+                        ManualSetFacing(Directions.RIGHT);
+                        if (isGrounded)
+                        {
+                            StopClimbing();
+                        }
+                    }
+                    else if(cachedVelocity.x < 0) {
+                        ManualSetFacing(Directions.LEFT);
+                        if (isGrounded)
+                        {
+                            StopClimbing();
+                        }
+                    }
                     cachedVelocity.x = 0;
                 } else {
+                    if(Input.GetAxis("Vertical") < 0.0f && GetClimbOverlapState() == ClimbCheckOverlapState.BOTTOM)
+                    {
+                        canRecieveInput_ = false;
+                        animator.Play("Player_Climb_Transition_Enter", -1);
+                    }
                     cachedVelocity.y = rb2d.velocity.y;
                 }
 
@@ -203,6 +229,13 @@ namespace MEGA
 
         }
 
+        public void AddYOffset(float offset)
+        {
+            Vector3 pos = transform.position;
+            pos.y += offset;
+            transform.position = pos;
+        }
+
         private void StartClimbing() //Would make this a method that takes a bool, but the animator doesn't like that.
         {
             Collider2D[] results = new Collider2D[1];
@@ -222,6 +255,7 @@ namespace MEGA
                 transform.position = newPos;
 
                 rb2d.gravityScale = 0;
+                rb2d.velocity = new Vector2();
                 isClimbing = true;
                 animator.SetBool("isClimbing", isClimbing);
             }
@@ -277,6 +311,7 @@ namespace MEGA
         public void EnableInput()
         {
             canRecieveInput_ = true;
+            Debug.Log(canRecieveInput_);
         }
 
         public void DisableInput()
