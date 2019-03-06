@@ -140,9 +140,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9df833033250ce945a123868b9d4f6e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 0
-  respawns: 0
-  meleeDamage: 0
+  maxHealth: 1
+  respawns: 1
+  meleeDamage: 1
   projectile: {fileID: 1317979078784710469, guid: 5da8ec7f2c5023041a84b8b8b5d1b3d2,
     type: 3}
   spriteRenderer: {fileID: 4657113849865361910}

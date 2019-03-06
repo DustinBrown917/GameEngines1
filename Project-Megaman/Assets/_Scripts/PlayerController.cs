@@ -311,7 +311,6 @@ namespace MEGA
         public void EnableInput()
         {
             canRecieveInput_ = true;
-            Debug.Log(canRecieveInput_);
         }
 
         public void DisableInput()
