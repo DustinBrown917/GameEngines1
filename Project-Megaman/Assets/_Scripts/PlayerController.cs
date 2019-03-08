@@ -93,6 +93,10 @@ namespace MEGA
                     if (isClimbing) { StopClimbing(); }
                     if (isGrounded) { shouldJump = true; }
                 }
+                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
+
+                if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
+                else { animator.SetBool("isRunning", false); }
 
                 if (Input.GetButtonDown("Vertical") && GetClimbOverlapState() != ClimbCheckOverlapState.NONE)
                 {
@@ -115,11 +119,6 @@ namespace MEGA
                             break;
                     }
                 }
-
-                cachedVelocity.x = Input.GetAxis("Horizontal") * movementSpeed * Time.fixedDeltaTime;
-
-                if (Input.GetButton("Horizontal") && isGrounded) { animator.SetBool("isRunning", true); }
-                else { animator.SetBool("isRunning", false); }
 
                 if (Input.GetButtonDown("Fire1")) {
                     animator.SetBool("isShooting", true);
@@ -152,14 +151,14 @@ namespace MEGA
                         ManualSetFacing(Directions.RIGHT);
                         if (isGrounded)
                         {
-                            StopClimbing();
+                            //StopClimbing();
                         }
                     }
                     else if(cachedVelocity.x < 0) {
                         ManualSetFacing(Directions.LEFT);
                         if (isGrounded)
                         {
-                            StopClimbing();
+                            //StopClimbing();
                         }
                     }
                     cachedVelocity.x = 0;
@@ -255,7 +254,8 @@ namespace MEGA
                 transform.position = newPos;
 
                 rb2d.gravityScale = 0;
-                rb2d.velocity = new Vector2();
+                cachedVelocity = new Vector2();
+                
                 isClimbing = true;
                 animator.SetBool("isClimbing", isClimbing);
             }

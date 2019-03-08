@@ -4,15 +4,14 @@ using UnityEngine;
 
 namespace MEGA
 {
-    public class Pits : MonoBehaviour
+    public class Spikes : MonoBehaviour
     {
-        
         private void OnTriggerEnter2D(Collider2D collision)
         {
             IHealthyObject ho = collision.GetComponent<IHealthyObject>();
             if (ho != null)
             {
-                ho.Kill(false);
+                ho.Kill(true);
             }
         }
     }

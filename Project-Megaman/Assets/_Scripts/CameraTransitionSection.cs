@@ -17,7 +17,7 @@ namespace MEGA
 
         //Where should the player move to upon entering the section.
         [SerializeField] private Vector2 playerEntrancePoint_;
-        public Vector2 PlayerEntrancePoint { get { return playerEntrancePoint_; } }
+        public Vector2 PlayerEntrancePoint { get { return transform.position + (Vector3)playerEntrancePoint_; } }
         [SerializeField] private bool usePlayerEntranceTransitionX_;
         public bool UsePlayerEntranceTransitionX { get { return usePlayerEntranceTransitionX_; } }
         [SerializeField] private bool usePlayerEntranceTransitionY_;
@@ -25,7 +25,7 @@ namespace MEGA
 
         //Where should the player move to upon returning to the section.
         [SerializeField] private Vector2 playerExitPoint_;
-        public Vector2 PlayerExitPoint { get { return playerExitPoint_; } }
+        public Vector2 PlayerExitPoint { get { return transform.position + (Vector3)playerExitPoint_; } }
         [SerializeField] private bool usePlayerExitTransitionX_;
         public bool UsePlayerExitTransitionX { get { return usePlayerExitTransitionX_; } }
         [SerializeField] private bool usePlayerExitTransitionY_;
@@ -33,9 +33,9 @@ namespace MEGA
 
 
         [SerializeField] private Vector2 minAnchor_;
-        public Vector2 MinAnchor { get { return minAnchor_; } }
+        public Vector2 MinAnchor { get { return transform.position + (Vector3)minAnchor_; } }
         [SerializeField] private Vector2 maxAnchor_;
-        public Vector2 MaxAnchor { get { return maxAnchor_; } }
+        public Vector2 MaxAnchor { get { return transform.position + (Vector3)maxAnchor_; } }
         [SerializeField] private Vector2 cameraDimensions;
 
         private Coroutine cr_Transition = null;
@@ -55,12 +55,12 @@ namespace MEGA
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(playerEntrancePoint_, 1.0f);
-            Gizmos.DrawWireSphere(playerExitPoint_, 1.0f);
+            Gizmos.DrawWireSphere(transform.position + (Vector3)playerEntrancePoint_, 1.0f);
+            Gizmos.DrawWireSphere(transform.position + (Vector3)playerExitPoint_, 1.0f);
 
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(minAnchor_, cameraDimensions);
-            Gizmos.DrawWireCube(maxAnchor_, cameraDimensions);
+            Gizmos.DrawWireCube(transform.position + (Vector3)minAnchor_, cameraDimensions);
+            Gizmos.DrawWireCube(transform.position + (Vector3)maxAnchor_, cameraDimensions);
         }
 
         public void TransitionToNext()
