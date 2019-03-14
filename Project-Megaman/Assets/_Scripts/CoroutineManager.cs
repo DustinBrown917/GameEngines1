@@ -8,7 +8,10 @@ public static class CoroutineManager {
     {
         HaltCoroutine(ref container, parentBehaviour);
 
-        container = parentBehaviour.StartCoroutine(routine);
+        if (parentBehaviour.enabled)
+        {
+            container = parentBehaviour.StartCoroutine(routine);
+        }     
     }
 
     public static void HaltCoroutine(ref Coroutine container, MonoBehaviour parentBehaviour)

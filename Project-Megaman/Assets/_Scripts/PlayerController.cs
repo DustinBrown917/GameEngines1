@@ -32,10 +32,12 @@ namespace MEGA
         private bool canFire = true;
         private bool isClimbing = false;
 
-        [SerializeField] private float maxHP = 100.0f;
+        [SerializeField] private float maxHP_ = 100.0f;
+        public float MaxHP { get { return maxHP_; } }
         [SerializeField] private float maxEnergy = 100.0f;
         [SerializeField] private Vector2 damageVelocity;
-        private float currentHP;
+        private float currentHP_;
+        public float CurrentHP { get { return currentHP_; } }
         private float currentEnergy;
 
         private Vector3 currentFirePosition;
@@ -393,7 +395,7 @@ namespace MEGA
             }
 
             spriteRenderer.color = c1;
-            if(currentHP > 0)
+            if(currentHP_ > 0)
             {
                 canReceiveDamage_ = true;
                 gameObject.layer = LayerMask.NameToLayer("Player");
@@ -425,7 +427,8 @@ namespace MEGA
 
         public void RestoreToMaxHP()
         {
-            currentHP = maxHP;
+            currentHP_ = maxHP_;
+            OnDamageReceived(new DamageReceivedArgs(1.0f, 0.0f));
         }
 
         public void Heal(float amount)
@@ -441,11 +444,12 @@ namespace MEGA
                 ApplyDamageForce();
                 animator.SetTrigger("takeDamage");
             }
-            currentHP = Mathf.Clamp(currentHP - amount, 0, maxHP);
+            currentHP_ = Mathf.Clamp(currentHP_ - amount, 0, maxHP_);
 
-            Debug.Log(currentHP + " Health Left.");
+            OnDamageReceived(new DamageReceivedArgs(currentHP_ / maxHP_, amount));
+            Debug.Log(currentHP_ + " Health Left.");
 
-            if(currentHP == 0) { Kill(true); }
+            if(currentHP_ == 0) { Kill(true); }
         }
 
         public void ApplyDamageForce() {
@@ -487,6 +491,7 @@ namespace MEGA
             canRecieveInput_ = true;
             canReceiveDamage_ = true;
             StopClimbing();
+            animator.SetBool("isShooting", false);
             animator.Play("Player_Idle", -1);
             gameObject.layer = LayerMask.NameToLayer("Player");
         }
@@ -518,6 +523,28 @@ namespace MEGA
             EventHandler handler = Death;
 
             if(handler != null) { handler(this, EventArgs.Empty); }
+        }
+
+
+        public event EventHandler<DamageReceivedArgs> DamageReceived;
+
+        public class DamageReceivedArgs : EventArgs
+        {
+            public float percentHealthRemaining;
+            public float damageAmountReceived;
+
+            public DamageReceivedArgs(float percentRemaining, float amountReceived)
+            {
+                percentHealthRemaining = percentRemaining;
+                damageAmountReceived = amountReceived;
+            }
+        }
+
+        public void OnDamageReceived(DamageReceivedArgs e)
+        {
+            EventHandler<DamageReceivedArgs> handler = DamageReceived;
+
+            if (handler != null) { handler(this, e); }
         }
 
         /******************************************************************************/

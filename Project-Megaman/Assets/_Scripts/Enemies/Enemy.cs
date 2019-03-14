@@ -8,8 +8,6 @@ namespace MEGA
     [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
     public abstract class Enemy : MonoBehaviour, IHealthyObject, IResettable
     {
-        
-
         protected Rigidbody2D rb2d;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected bool respawns;
@@ -86,6 +84,7 @@ namespace MEGA
             if (withAnim) {
                 animator.SetTrigger("death");
                 rb2d.simulated = false;
+                ParticleManager.Instance.CreateParticleExplosion(0, transform.position);
                 CoroutineManager.HaltCoroutine(ref cr_enemyBehaviour, this);
             }
             else {

@@ -120,6 +120,7 @@ MonoBehaviour:
   meleeDamage: 2
   projectile: {fileID: 0}
   spriteRenderer: {fileID: 4657113849865361910}
+  spawnParent: {fileID: 0}
   groundCheckCollider: {fileID: 1237549166195637130}
   whatIsGround:
     serializedVersion: 2
