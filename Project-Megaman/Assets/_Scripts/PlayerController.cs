@@ -71,7 +71,6 @@ namespace MEGA
 
                 startPosition = transform.position;
 
-
                 animator = GetComponent<Animator>();
                 rb2d = GetComponent<Rigidbody2D>();
                 wfs_FireCooldown = new WaitForSeconds(fireCoolDownTime);

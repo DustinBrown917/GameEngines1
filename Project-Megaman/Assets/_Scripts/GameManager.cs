@@ -28,6 +28,7 @@ namespace MEGA
             if(instance_ == null) {
                 instance_ = this;
                 mainCamera_ = targetMainCamera;
+                Time.timeScale = 1.0f;
             } else {
                 Destroy(gameObject);
             }

@@ -6,10 +6,7 @@ using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField] private bool masterMuted = false;
-    [SerializeField] private bool musicMuted = false;
-    [SerializeField] private bool sfxMuted = false;
-
+    [SerializeField, Tooltip("Is this manager used to initialize the audio system?")] private bool isInitializer = false;
     [SerializeField] private AudioMixer masterMixer;
 
     [SerializeField] private string masterVolKey = "master_vol";
@@ -31,7 +28,23 @@ public class AudioManager : MonoBehaviour
 
     public void OnEnable()
     {
-        LoadFromPlayerPrefs();
+        if (!PlayerPrefs.HasKey(masterMuteKey)) {
+            Debug.Log("Initializing");
+            InitializePlayerPrefs();
+        }
+        LoadFromPlayerPrefs();        
+    }
+
+    public void Start()
+    {
+        if (isInitializer) { gameObject.SetActive(false); }
+    }
+
+    public void InitializePlayerPrefs()
+    {
+        PlayerPrefs.SetInt(masterMuteKey, 1);
+        PlayerPrefs.SetInt(musicMuteKey, 1);
+        PlayerPrefs.SetInt(sfxMuteKey, 1);
     }
 
     public void LoadFromPlayerPrefs()
@@ -44,12 +57,12 @@ public class AudioManager : MonoBehaviour
         SetMusicVol(PlayerPrefs.GetFloat(musicVolKey));
         musicSlider.value = PlayerPrefs.GetFloat(musicVolKey);
         musicMute.isOn = PlayerPrefs.GetInt(musicMuteKey) == 0 ? false : true;
-        SetMusicMute(PlayerPrefs.GetInt(masterMuteKey) == 0 ? false : true);
+        SetMusicMute(PlayerPrefs.GetInt(musicMuteKey) == 0 ? false : true);
 
         SetSFXVol(PlayerPrefs.GetFloat(sfxVolKey));
         sfxSlider.value = PlayerPrefs.GetFloat(sfxVolKey);
         sfxMute.isOn = PlayerPrefs.GetInt(sfxMuteKey) == 0 ? false : true;
-        SetSfxMute(PlayerPrefs.GetInt(masterMuteKey) == 0 ? false : true);
+        SetSfxMute(PlayerPrefs.GetInt(sfxMuteKey) == 0 ? false : true);
     }
 
     public void SetMasterVol(float vol)
