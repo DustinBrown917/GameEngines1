@@ -8,7 +8,7 @@ public static class CoroutineManager {
     {
         HaltCoroutine(ref container, parentBehaviour);
 
-        if (parentBehaviour.enabled)
+        if (parentBehaviour.gameObject.activeSelf)
         {
             container = parentBehaviour.StartCoroutine(routine);
         }     

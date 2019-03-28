@@ -9,6 +9,7 @@ namespace MEGA
         private static ParticleManager instance_ = null;
         public static ParticleManager Instance { get { return instance_; } }
         [SerializeField] private GameObject[] particlePrefabs;
+        public int NumOfParticleBlasts { get { return particlePrefabs.Length; } }
 
 
         private void Awake()

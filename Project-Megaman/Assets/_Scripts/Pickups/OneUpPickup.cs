@@ -8,7 +8,9 @@ namespace MEGA
     {
         public override void OnPickup(GameObject whoPickedMeUp)
         {
-            Debug.Log("Extra Life!");
+            PlayerController p = whoPickedMeUp.GetComponent<PlayerController>();
+
+            if (p != null) { p.AddLives(1); }
         }
     }
 }

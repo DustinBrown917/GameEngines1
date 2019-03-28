@@ -31,6 +31,10 @@ namespace MEGA
         [SerializeField] private float damageFlashRate = 1;
         private bool canFire = true;
         private bool isClimbing = false;
+        private int livesRemaining_ = 3;
+        public int LivesRemaining { get { return livesRemaining_; } }
+        private bool isAlive_ = true;
+        public bool IsAlive { get { return isAlive_; } }
 
         [SerializeField] private float maxHP_ = 100.0f;
         public float MaxHP { get { return maxHP_; } }
@@ -78,7 +82,6 @@ namespace MEGA
             } else {
                 Destroy(gameObject);
             }
-
         }
 
         private void Start()
@@ -88,7 +91,7 @@ namespace MEGA
 
         void Update()
         {
-            if (canRecieveInput_)
+            if (canRecieveInput_ && !GameManager.Instance.Paused) 
             {
                 if (Input.GetButtonDown("Fire2")) { animator.SetTrigger("isSecondaryShooting"); }
                 if (Input.GetButtonDown("Jump")) {
@@ -127,12 +130,11 @@ namespace MEGA
                 }
                 if (Input.GetButtonUp("Fire1")) { animator.SetBool("isShooting", false); }
             }
-
         }
 
         private void FixedUpdate()
         {
-            if (canRecieveInput_)
+            if (canRecieveInput_ && !GameManager.Instance.Paused)
             {
                 if (isClimbing) {
                     
@@ -205,6 +207,13 @@ namespace MEGA
             }
         }
 
+        public void AddLives(int lives)
+        {
+            livesRemaining_ += lives;
+
+            OnLivesChanged(new LivesChangedArgs(lives, livesRemaining_));
+        }
+
         /// <summary>
         /// Check if the player is grounded.
         /// </summary>
@@ -227,7 +236,6 @@ namespace MEGA
             } else {
                 return ClimbCheckOverlapState.NONE;
             }
-
         }
 
         public void AddYOffset(float offset)
@@ -364,7 +372,6 @@ namespace MEGA
             yield return wfs_FireCooldown;
             canFire = true;
             cr_FireCooldown = null;
-            //if (Input.GetButton("Fire1")) { Shoot(); }
         }
 
         private IEnumerator DamageReceivedSequence()
@@ -447,7 +454,6 @@ namespace MEGA
             currentHP_ = Mathf.Clamp(currentHP_ - amount, 0, maxHP_);
 
             OnDamageReceived(new DamageReceivedArgs(currentHP_ / maxHP_, amount));
-            Debug.Log(currentHP_ + " Health Left.");
 
             if(currentHP_ == 0) { Kill(true); }
         }
@@ -460,10 +466,14 @@ namespace MEGA
         }
 
         public void Kill(bool withAnim = false) {
+            if (!isAlive_) { return; }
             canRecieveInput_ = false;
             canReceiveDamage_ = false;
+            isAlive_ = false;
 
             rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y);
+
+            AddLives(-1);
 
             OnDeath();
             if (withAnim) {
@@ -494,6 +504,7 @@ namespace MEGA
             animator.SetBool("isShooting", false);
             animator.Play("Player_Idle", -1);
             gameObject.layer = LayerMask.NameToLayer("Player");
+            isAlive_ = true;
         }
 
         public void RestoreToMaxEnergy()
@@ -545,6 +556,28 @@ namespace MEGA
             EventHandler<DamageReceivedArgs> handler = DamageReceived;
 
             if (handler != null) { handler(this, e); }
+        }
+
+
+        public event EventHandler<LivesChangedArgs> LivesChanged;
+
+        public class LivesChangedArgs : EventArgs
+        {
+            public int livesChangedBy;
+            public int newLives;
+
+            public LivesChangedArgs(int changedBy, int newLives)
+            {
+                livesChangedBy = changedBy;
+                this.newLives = newLives;
+            }
+        }
+
+        private void OnLivesChanged(LivesChangedArgs e)
+        {
+            EventHandler<LivesChangedArgs> handler = LivesChanged;
+
+            if(handler != null) { handler(this, e); }
         }
 
         /******************************************************************************/

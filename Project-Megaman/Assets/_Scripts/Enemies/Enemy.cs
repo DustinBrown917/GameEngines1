@@ -84,7 +84,7 @@ namespace MEGA
             if (withAnim) {
                 animator.SetTrigger("death");
                 rb2d.simulated = false;
-                ParticleManager.Instance.CreateParticleExplosion(0, transform.position);
+                ParticleManager.Instance.CreateParticleExplosion(UnityEngine.Random.Range(0, ParticleManager.Instance.NumOfParticleBlasts), transform.position);
                 CoroutineManager.HaltCoroutine(ref cr_enemyBehaviour, this);
             }
             else {

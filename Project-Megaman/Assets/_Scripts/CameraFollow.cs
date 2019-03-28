@@ -33,18 +33,6 @@ namespace MEGA
             }
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private void FixedUpdate()
         {
             if (IsTransitioning) { return; }
@@ -143,8 +131,8 @@ namespace MEGA
 
             Time.timeScale = 0;
             while (t < transitionDuration)
-            {
-                t += Time.unscaledDeltaTime;
+            {             
+                if (!GameManager.Instance.Paused) { t += Time.unscaledDeltaTime; }                
                 newCPos = Vector3.Lerp(cStartPos, cTargetPos, t/transitionDuration);
                 newFtPos = Vector3.Lerp(ftStartPos, ftTargetPos, t / transitionDuration);
                 cameraTransform.position = newCPos;
