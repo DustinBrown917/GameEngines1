@@ -37,7 +37,10 @@ public class AudioManager : MonoBehaviour
 
     public void Start()
     {
-        if (isInitializer) { gameObject.SetActive(false); }
+        if (isInitializer) {
+            LoadFromPlayerPrefs();
+            gameObject.SetActive(false);
+        }
     }
 
     public void InitializePlayerPrefs()

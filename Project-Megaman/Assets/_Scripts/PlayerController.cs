@@ -83,6 +83,11 @@ namespace MEGA
                 wfs_FireCooldown = new WaitForSeconds(fireCoolDownTime);
                 audioSource = GetComponent<AudioSource>();
 
+                //For the sake of the assignment. This could could be avoided by prefacing the class with "RequireComponent" pattern.
+                if(animator == null) { throw new UnityException("No animator found on Player Controller"); }
+                if(rb2d == null) { throw new UnityException("No Rigid Body 2D found on Player Controller"); }
+                if(audioSource == null) { throw new UnityException("No AudioSource found on Player Controller"); }
+
                 startGravity = rb2d.gravityScale;
                 Register();
 
@@ -292,6 +297,7 @@ namespace MEGA
         private void Jump()
         {
             cachedVelocity.y += jumpSpeed;
+            if(jumpSound == null) { throw new UnityException("Jump sound is missing from PlayerController"); }
             audioSource.clip = jumpSound;
             audioSource.Play();
             shouldJump = false;
@@ -342,6 +348,7 @@ namespace MEGA
             if (!canFire) { return; }
             Projectile p = Instantiate(projectilePrefab, transform.position + currentFirePosition, Quaternion.identity).GetComponent<Projectile>();
 
+            if (shootSound == null) { throw new UnityException("Shoot sound is missing from PlayerController"); }
             audioSource.clip = shootSound;
             audioSource.Play();
 
@@ -463,6 +470,7 @@ namespace MEGA
                 ApplyDamageForce();
                 animator.SetTrigger("takeDamage");
 
+                if (damagedSound == null) { throw new UnityException("Damaged sound is missing from PlayerController"); }
                 audioSource.clip = damagedSound;
                 audioSource.Play();
             }
@@ -486,6 +494,7 @@ namespace MEGA
             canReceiveDamage_ = false;
             isAlive_ = false;
 
+            if (defeatSound == null) { throw new UnityException("Defeat sound is missing from PlayerController"); }
             audioSource.clip = defeatSound;
             audioSource.Play();
 
