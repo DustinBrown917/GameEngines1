@@ -21,6 +21,12 @@ namespace MEGA
         [SerializeField] protected Transform spawnParent;
         protected Vector3 offScreenHoldingPosition = new Vector3(0.0f, 0.0f, -100.0f);
 
+        private AudioSource audioSource;
+
+        [SerializeField] private AudioClip hitSound;
+        [SerializeField] private AudioClip deathSound;
+        
+
         private Coroutine cr_safeToSpawnChecker;
         private Coroutine cr_enemyBehaviour;
 
@@ -28,6 +34,7 @@ namespace MEGA
         {
             animator = GetComponent<Animator>();
             rb2d = GetComponent<Rigidbody2D>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         protected virtual void Start()
@@ -72,6 +79,10 @@ namespace MEGA
             currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
 
             if (currentHealth == 0) { Kill(true); }
+            else {
+                audioSource.clip = hitSound;
+                audioSource.Play();
+            }
         }
 
         public virtual void Heal(float amount)
@@ -81,6 +92,8 @@ namespace MEGA
 
         public virtual void Kill(bool withAnim = false)
         {
+            audioSource.clip = deathSound;
+            audioSource.Play();
             if (withAnim) {
                 animator.SetTrigger("death");
                 rb2d.simulated = false;

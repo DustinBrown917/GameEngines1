@@ -51,18 +51,18 @@ public class AudioManager : MonoBehaviour
     {
         SetMasterVol(PlayerPrefs.GetFloat(masterVolKey));
         masterSlider.value = PlayerPrefs.GetFloat(masterVolKey);
-        masterMute.isOn = PlayerPrefs.GetInt(masterMuteKey) == 0 ? false : true;
-        SetMasterMute(PlayerPrefs.GetInt(masterMuteKey) == 0 ? false : true);
+        masterMute.isOn = PlayerPrefs.GetInt(masterMuteKey) == 0 ? true : false;
+        SetMasterMute(PlayerPrefs.GetInt(masterMuteKey) == 0 ? true : false);
 
         SetMusicVol(PlayerPrefs.GetFloat(musicVolKey));
         musicSlider.value = PlayerPrefs.GetFloat(musicVolKey);
-        musicMute.isOn = PlayerPrefs.GetInt(musicMuteKey) == 0 ? false : true;
-        SetMusicMute(PlayerPrefs.GetInt(musicMuteKey) == 0 ? false : true);
+        musicMute.isOn = PlayerPrefs.GetInt(musicMuteKey) == 0 ? true : false;
+        SetMusicMute(PlayerPrefs.GetInt(musicMuteKey) == 0 ? true : false);
 
         SetSFXVol(PlayerPrefs.GetFloat(sfxVolKey));
         sfxSlider.value = PlayerPrefs.GetFloat(sfxVolKey);
-        sfxMute.isOn = PlayerPrefs.GetInt(sfxMuteKey) == 0 ? false : true;
-        SetSfxMute(PlayerPrefs.GetInt(sfxMuteKey) == 0 ? false : true);
+        sfxMute.isOn = PlayerPrefs.GetInt(sfxMuteKey) == 0 ? true : false;
+        SetSfxMute(PlayerPrefs.GetInt(sfxMuteKey) == 0 ? true : false);
     }
 
     public void SetMasterVol(float vol)
@@ -85,6 +85,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetMasterMute(bool mute)
     {
+        mute = !mute;
         if (mute) {
             masterMixer.SetFloat(masterVolKey, -80.0f);
             
@@ -97,6 +98,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetMusicMute(bool mute)
     {
+        mute = !mute;
         if (mute) {
             masterMixer.SetFloat(musicVolKey, -80.0f);
         }
@@ -109,6 +111,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetSfxMute(bool mute)
     {
+        mute = !mute;
         if (mute) {
             masterMixer.SetFloat(sfxVolKey, -80.0f);
         } else {

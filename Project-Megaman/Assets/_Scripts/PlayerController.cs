@@ -63,6 +63,13 @@ namespace MEGA
         [SerializeField] private float pickupFlashTime = 1.0f;
         [SerializeField] private float pickupFlahRate = 1.0f;
 
+        private AudioSource audioSource;
+
+        [SerializeField] private AudioClip damagedSound;
+        [SerializeField] private AudioClip defeatSound;
+        [SerializeField] private AudioClip jumpSound;
+        [SerializeField] private AudioClip shootSound;
+
         private void Awake()
         {
             //Open singleton pattern.
@@ -74,6 +81,7 @@ namespace MEGA
                 animator = GetComponent<Animator>();
                 rb2d = GetComponent<Rigidbody2D>();
                 wfs_FireCooldown = new WaitForSeconds(fireCoolDownTime);
+                audioSource = GetComponent<AudioSource>();
 
                 startGravity = rb2d.gravityScale;
                 Register();
@@ -284,6 +292,8 @@ namespace MEGA
         private void Jump()
         {
             cachedVelocity.y += jumpSpeed;
+            audioSource.clip = jumpSound;
+            audioSource.Play();
             shouldJump = false;
         }
 
@@ -331,6 +341,9 @@ namespace MEGA
         {
             if (!canFire) { return; }
             Projectile p = Instantiate(projectilePrefab, transform.position + currentFirePosition, Quaternion.identity).GetComponent<Projectile>();
+
+            audioSource.clip = shootSound;
+            audioSource.Play();
 
             if (p != null && spriteRenderer.flipX)
             {
@@ -449,6 +462,9 @@ namespace MEGA
                 CoroutineManager.BeginCoroutine(DamageReceivedSequence(), ref cr_DamageReceivedSequence, this);
                 ApplyDamageForce();
                 animator.SetTrigger("takeDamage");
+
+                audioSource.clip = damagedSound;
+                audioSource.Play();
             }
             currentHP_ = Mathf.Clamp(currentHP_ - amount, 0, maxHP_);
 
@@ -469,6 +485,9 @@ namespace MEGA
             canRecieveInput_ = false;
             canReceiveDamage_ = false;
             isAlive_ = false;
+
+            audioSource.clip = defeatSound;
+            audioSource.Play();
 
             rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y);
 
