@@ -395,6 +395,7 @@ namespace MEGA
 
         private IEnumerator DamageReceivedSequence()
         {
+            if (isClimbing) { StopClimbing(); }
             gameObject.layer = LayerMask.NameToLayer("PlayerInjured");
             Color c1 = Color.white;
             Color c2 = new Color(1.0f, 1.0f, 1.0f, 0.25f);

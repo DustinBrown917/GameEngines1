@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7240033883000696947}
   - component: {fileID: 3279779956707387578}
   - component: {fileID: 4980021117411153610}
-  m_Layer: 14
+  m_Layer: 17
   m_Name: KinderSurprise_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
