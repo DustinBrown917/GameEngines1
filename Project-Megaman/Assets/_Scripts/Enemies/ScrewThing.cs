@@ -41,6 +41,7 @@ namespace MEGA
 
         protected override void FireProjectile()
         {
+            base.FireProjectile();
             Instantiate(projectile, transform.position + projectileOffset, Quaternion.identity).GetComponent<Projectile>().SetLaunchVelocity(new Vector2(0, projectileSpeed));
             Instantiate(projectile, transform.position + projectileOffset, Quaternion.identity).GetComponent<Projectile>().SetLaunchVelocity(new Vector2(projectileSpeed, 0.0f));
             Instantiate(projectile, transform.position + projectileOffset, Quaternion.identity).GetComponent<Projectile>().SetLaunchVelocity(new Vector2(-projectileSpeed, 0.0f));

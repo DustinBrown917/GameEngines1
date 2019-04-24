@@ -21,10 +21,11 @@ namespace MEGA
         [SerializeField] protected Transform spawnParent;
         protected Vector3 offScreenHoldingPosition = new Vector3(0.0f, 0.0f, -100.0f);
 
-        private AudioSource audioSource;
+        protected AudioSource audioSource;
 
         [SerializeField] private AudioClip hitSound;
         [SerializeField] private AudioClip deathSound;
+        [SerializeField] protected AudioClip shootSound;
         
 
         private Coroutine cr_safeToSpawnChecker;
@@ -155,7 +156,10 @@ namespace MEGA
             IReset();
         }
 
-        protected virtual void FireProjectile() { /*Stub*/ } //Data contract since all enemies COULD have a projectile.
+        protected virtual void FireProjectile() {
+            audioSource.clip = shootSound;
+            audioSource.Play();
+        }
         protected abstract IEnumerator EnemyBehaviour();
     }
 }

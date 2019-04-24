@@ -29,6 +29,7 @@ namespace MEGA
                 instance_ = this;
                 mainCamera_ = targetMainCamera;
                 Time.timeScale = 1.0f;
+                
             } else {
                 Destroy(gameObject);
             }
@@ -71,7 +72,6 @@ namespace MEGA
             }
             
         }
-
 
         public void SetPause(bool pause)
         {

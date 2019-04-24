@@ -247,6 +247,7 @@ MonoBehaviour:
   spawnParent: {fileID: 0}
   hitSound: {fileID: 8300000, guid: d19e2d2ba35b1b24795fe45255105831, type: 3}
   deathSound: {fileID: 8300000, guid: b14b77bc74e5b254b84c372dd58dd553, type: 3}
+  shootSound: {fileID: 8300000, guid: cd77e1a0fd20f50429516bc56650084c, type: 3}
   velocity: {x: -4, y: 0}
   fireFrequency: 1
   projectileVelocity: {x: 0, y: 10}

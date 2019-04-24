@@ -45,7 +45,7 @@ namespace MEGA
 
         protected override void FireProjectile()
         {
-            
+            base.FireProjectile();
             float flipFactor = (spriteRenderer.flipX) ? 1.0f : -1.0f;
             Vector2 projVel = new Vector2(projectileVelocity.x * flipFactor, projectileVelocity.y);
             projVel = Vector2FromAngle(projVel, initialShotAngle + (shotAngleIncrement * shotCount));

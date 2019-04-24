@@ -58,7 +58,7 @@ namespace MEGA
         protected override void FireProjectile()
         {
             //Gonna use magic numbers here purely because I'm trying to match something specific from the game. Otherwise, they would be class variables.
-
+            base.FireProjectile();
             for(int i = 0; i < 8; i++)
             {
                 Vector2 projVel = Vector2FromAngle(projectileVelocity, 45.0f * i);

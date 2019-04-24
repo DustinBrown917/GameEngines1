@@ -150,9 +150,10 @@ MonoBehaviour:
   spawnParent: {fileID: 0}
   hitSound: {fileID: 8300000, guid: d19e2d2ba35b1b24795fe45255105831, type: 3}
   deathSound: {fileID: 8300000, guid: b14b77bc74e5b254b84c372dd58dd553, type: 3}
+  shootSound: {fileID: 8300000, guid: cd77e1a0fd20f50429516bc56650084c, type: 3}
   projectileSpeed: 10
   projectileOffset: {x: 0, y: 0.8, z: 0}
-  targetingDistance: 6.5
+  targetingDistance: 7.5
   checkForPlayerInterval: 0.5
 --- !u!50 &4206117758140998815
 Rigidbody2D:
